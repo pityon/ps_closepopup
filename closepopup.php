@@ -43,30 +43,37 @@ class closepopup extends Module
         $this->displayName = $this->l('Close Popup');
         $this->description = $this->l('Module shows a customizable popup in case customer intends to close website.');
         $this->confirmUninstall = $this->l('Are you sure you want to delete module with all its contents?');
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
 
         // CUSTOM SETUP
         $pre = strtoupper($this->name).'_';
         $this->config_fields = array(
-			// array(
-			// 	'type' => 'text',
-			// 	'label' => $this->l('Nagłówek'),
-			// 	'name' => 'ibif_age_heading',
-			// 	'default_value' => 'Uwaga',
-			// ),
-			array(
-				'type' => 'textarea',
-				'autoload_rte' => true,
-				'label' => $this->l('Content'),
-				'name' => $pre.'CONTENT',
-				'default_value' => '<h2>Wait!</h2><p><big>We want to give YOU a <strong>10% discount</strong> for your first order.</big></p><p><strong>Use this discount code</strong> at the checkout - <strong>BH10</strong></p>',
-			),
 			array(
 				'type' => 'color',
 				'label' => $this->l('Background color'),
 				'name' => $pre.'BG_COLOR',
 				'default_value' => '#f5375d',
 			),
+            array(
+				'type' => 'color',
+				'label' => $this->l('Text color'),
+				'name' => $pre.'TEXT_COLOR',
+				'default_value' => '#ffffff',
+			),
+            array(
+				'type' => 'textarea',
+				'autoload_rte' => true,
+				'label' => $this->l('Content'),
+				'name' => $pre.'CONTENT',
+				'default_value' => '<h2>Wait!</h2><p><big>We want to give YOU a <strong>10% discount</strong> for your first order.</big></p><p><strong>Use this discount code</strong> at the checkout - <strong>BH10</strong></p>',
+			),
+            array(
+                'type' => 'file',
+                'name' => $pre.'BG_IMAGE',
+                'multiple' => false,
+                'label' => $this->l('Image as background'),
+                'lang' => true,
+            ),
             array(
                 'type' => 'switch',
                 'label' => $this->l('Restrict to date range'),
@@ -85,16 +92,19 @@ class closepopup extends Module
                         'label' => $this->l('Disabled')
                     )
                 ),
+                'section' => 'restrictions',
             ),
             array(
 				'type' => 'date',
 				'label' => $this->l('Start date'),
 				'name' => $pre.'DATE_FROM',
+                'section' => 'restrictions',
 			),
             array(
 				'type' => 'date',
 				'label' => $this->l('End date'),
 				'name' => $pre.'DATE_TO',
+                'section' => 'restrictions',
 			),
             array(
 				'type' => 'select',
@@ -113,64 +123,34 @@ class closepopup extends Module
     				'name' => 'name',
 				),
 				'default_value' => '10',
+                'section' => 'restrictions',
 			),
             array(
-                'type' => 'file',
-                'name' => $pre.'BG_IMAGE',
-                'multiple' => false,
-                'label' => $this->l('Image as background'),
-                'lang' => true,
-                'desc' => $this->renderMiniature($pre.'BG_IMAGE'),
-            )
-			// array(
-			// 	'type' => 'text',
-			// 	'label' => $this->l('Treść braku zgody'),
-			// 	'name' => 'ibif_age_decline_btn',
-			// 	'default_value' => 'Wyjście',
-			// ),
-			// array(
-			// 	'type' => 'text',
-			// 	'label' => $this->l('Link braku zgody'),
-			// 	'name' => 'ibif_age_decline_url',
-			// 	'default_value' => 'https://www.google.com/',
-			// ),
-            // array(
-            //     'type' => 'switch',
-            //     'label' => $this->l('Live mode'),
-            //     'name' => 'EXITPOPUP_LIVE_MODE',
-            //     'is_bool' => true,
-            //     'desc' => $this->l('Use this module in live mode'),
-            //     'values' => array(
-            //         array(
-            //             'id' => 'active_on',
-            //             'value' => true,
-            //             'label' => $this->l('Enabled')
-            //         ),
-            //         array(
-            //             'id' => 'active_off',
-            //             'value' => false,
-            //             'label' => $this->l('Disabled')
-            //         )
-            //     ),
-            // ),
-            // array(
-            //     'col' => 3,
-            //     'type' => 'text',
-            //     'prefix' => '<i class="icon icon-envelope"></i>',
-            //     'desc' => $this->l('Enter a valid email address'),
-            //     'name' => 'EXITPOPUP_ACCOUNT_EMAIL',
-            //     'label' => $this->l('Email'),
-            // ),
-            // array(
-            //     'type' => 'password',
-            //     'name' => 'EXITPOPUP_ACCOUNT_PASSWORD',
-            //     'label' => $this->l('Password'),
-            // ),
+				'type' => 'select',
+				'label' => $this->l('Hook'),
+				'name' => $pre.'SELECTED_HOOK',
+                'desc' => $this->l('Show module only in selected place'),
+				'options' => array(
+					'query' => array(
+						array('id_option' => '', 'name' => 'Everywhere'),
+						array('id_option' => 'home', 'name' => 'Homepage'),
+						array('id_option' => 'categories', 'name' => 'Categories'),
+						array('id_option' => 'products', 'name' => 'Product page'),
+					),
+					'id' => 'id_option',
+    				'name' => 'name',
+				),
+                'section' => 'restrictions',
+			),
 		);
         $this->css = array(
 			array(
                 'file' => 'front.css',
                 'front_office' => true,
+            ),
+            array(
+                'file' => 'back.css',
+                'back_office' => true,
             ),
 		);
 		$this->js = array(
@@ -187,11 +167,11 @@ class closepopup extends Module
         return 
             parent::install() &&
             $this->registerFields() && 
-            $this->registerHook('header') &&
             $this->registerHook('backOfficeHeader') &&
             $this->registerHook('displayHeader') &&
             $this->registerHook('displayHome') &&
-            $this->registerHook('displayProductExtraContent');
+            $this->registerHook('displayProductAdditionalInfo') &&
+            $this->registerHook('displayFooter');
     }
 
     public function uninstall()
@@ -205,7 +185,10 @@ class closepopup extends Module
     public function getContent()
     {
         $html = '';
-        if (((bool)Tools::isSubmit('submit_'.$this->name)) == true) {
+        if (((bool)Tools::isSubmit('submit_image_delete')) == true) {
+            $html = $this->handleImageDeletion();
+        }
+        elseif (((bool)Tools::isSubmit('submit_'.$this->name)) == true) {
             $this->postProcess();
             $html = $this->displayConfirmation($this->l('Configuration updated'));
         }
@@ -235,7 +218,6 @@ class closepopup extends Module
         $helper->token = Tools::getAdminTokenLite('AdminModules');
 
         $helper->tpl_vars = array(
-            // 'fields_value' => $this->getConfigFormValues(), /* Add values for your inputs */
             'languages' => $this->context->controller->getLanguages(),
             'id_language' => $this->context->language->id,
         );
@@ -251,8 +233,21 @@ class closepopup extends Module
 				'form' => array(
 					// 'tinymce' => true,
 					'legend' => array(
-						'title' => $this->l('Settings'),
+						'title' => $this->l('Layout settings'),
 						'icon' => 'icon-cogs'
+					),
+					'input' => array(),
+					// 'submit' => array(
+					// 	'title' => $this->l('Save'),
+					// 	'class' => 'btn btn-default pull-right'
+					// )
+				)
+			),
+            'restrictions' => array(
+				'form' => array(
+					'legend' => array(
+						'title' => $this->l('Restrictions'),
+						'icon' => 'icon-credit-card'
 					),
 					'input' => array(),
 					'submit' => array(
@@ -266,22 +261,16 @@ class closepopup extends Module
 		foreach ($this->config_fields as $field) {
 			$helper->fields_value[$field['name']] = Configuration::get($field['name']);
 			$section = $field['section'] ?? 'general';
+
+            // ADD MINIATURE TO DESCRIPTION
+            if ($field['type'] == 'file') {
+                $field['desc'] = $this->renderMiniature($field['name']);
+            }
+
 			$sections[$section]['form']['input'][] = $field;
 		}
 
         return $sections;
-    }
-
-    /**
-     * Set values for the inputs.
-     */
-    protected function getConfigFormValues()
-    {
-        return array(
-            'EXITPOPUP_LIVE_MODE' => Configuration::get('EXITPOPUP_LIVE_MODE', true),
-            'EXITPOPUP_ACCOUNT_EMAIL' => Configuration::get('EXITPOPUP_ACCOUNT_EMAIL', 'contact@prestashop.com'),
-            'EXITPOPUP_ACCOUNT_PASSWORD' => Configuration::get('EXITPOPUP_ACCOUNT_PASSWORD', null),
-        );
     }
 
     protected function postProcess()
@@ -292,12 +281,26 @@ class closepopup extends Module
             $tags = ($field['type'] == 'textarea');
 
             if ($field['type'] == 'file') {
-                $ext = end((explode(".", $value)));
-                $allowed = array('jpg', 'png');
-                if (in_array($ext, $allowed)) {
-                    $filename = date("Ymdhis").'.'.$ext;
-                    move_uploaded_file($_FILES[$field['name']]['tmp_name'], $this->local_path.'views/img/'.$filename);
-                    $value = $filename;
+                $size = $_FILES[$field['name']]['size'];
+                $previousFile = Configuration::get($field['name']);
+
+                if ($size > 10) {
+                    $ext = end((explode(".", $value)));
+                    $allowed = array('jpg', 'png');
+                    if (in_array($ext, $allowed)) {
+
+                        // REMOVE OLD FILE IF NEW IS UPLOADED
+                        if ($previousFile) {
+                            unlink($this->local_path.'views/img/upload/'.$previousFile);
+                        }
+
+                        $filename = date("Ymdhis").'.'.$ext;
+                        move_uploaded_file($_FILES[$field['name']]['tmp_name'], $this->local_path.'views/img/upload/'.$filename);
+                        $value = $filename;
+                    }
+                }
+                else {
+                    $value = $previousFile;
                 }
             }
 
@@ -311,22 +314,36 @@ class closepopup extends Module
         $this->hookJS('back_office');
     }
 
-    public function hookHeader()
+    public function hookDisplayHeader()
     {
         $this->hookCSS();
         $this->hookJS();
     }
 
-    public function hookDisplayHeader()
-    {
-    }
-
     public function hookDisplayHome()
     {
+        if ($this->isAvailable('home')) {
+            return $this->renderView();
+        }
+        return '';
     }
 
-    public function hookDisplayProductExtraContent()
+    public function hookDisplayProductAdditionalInfo()
     {
+        if ($this->isAvailable('products')) {
+            return $this->renderView();
+        }
+        return '';
+    }
+
+    public function hookDisplayFooter()
+    {
+        if ($this->context->controller->php_self == 'category') {
+            if ($this->isAvailable('categories')) {
+                return $this->renderView();
+            }
+        }
+        return '';
     }
 
     // HELPER METHODS
@@ -353,7 +370,7 @@ class closepopup extends Module
         foreach ($this->css as $file) {
             $_hook = $file[$hook] ?? false;
             if ($_hook == true) {
-                $module = $this->_path.'/views/css/'.$file['file'];
+                $module = $this->_path.'views/css/'.$file['file'];
                 $theme = _THEME_DIR_.'css/modules/'.$this->name.'/'.$file['file'];
                 if (file_exists($theme)) {
                     $this->context->controller->addCSS($theme, 'all');
@@ -369,7 +386,7 @@ class closepopup extends Module
         foreach ($this->js as $file) {
             $_hook = $file[$hook] ?? false;
             if ($_hook == true) {
-                $module = $this->_path.'/views/js/'.$file['file'];
+                $module = $this->_path.'views/js/'.$file['file'];
                 $theme = _THEME_DIR_.'js/modules/'.$this->name.'/'.$file['file'];
                 if (file_exists($theme)) {
                     $this->context->controller->addJS($theme);
@@ -384,12 +401,83 @@ class closepopup extends Module
     private function renderMiniature($field_name) {
         $filename = Configuration::get($field_name);
         if ($filename) {
-            $path = $this->local_path.'views/img/'.$filename;
-            $path2 = $this->_path.'views/img/'.$filename;   // path that works on localhost
+            $path = $this->local_path.'views/img/upload/'.$filename;
+            $path2 = $this->_path.'views/img/upload/'.$filename;   // path that works on localhost
             if (file_exists($path)) {
-                return '<img src="'.$path2.'" class="mini">';
+                return '<img src="'.$path2.'" class="mini"><br><button type="submit" value="1" name="submit_image_delete" class="btn btn-default">'.$this->l('Delete image').'</button>';
             }
         }
         return '';
     }
+
+    private function handleImageDeletion() {
+        $field_name = strtoupper($this->name).'_BG_IMAGE';
+        $bg_image = Configuration::get($field_name);
+        if ($bg_image) {
+            unlink($this->local_path.'views/img/upload/'.$bg_image);
+            Configuration::updateValue($field_name, '');
+            return $this->displayConfirmation($this->l('File deleted successfully'));
+        }
+    }
+
+    private function renderView() {
+        foreach ($this->config_fields as $field) {
+			$key = $field['name'];
+			$value = Configuration::get($key);
+			$this->context->smarty->assign($key, $value);
+		}
+        $this->context->smarty->assign('CLOSEPOPUP_IMG_DIR', $this->_path.'views/img/upload/');
+
+        return $this->display(__FILE__, 'closepopup.tpl');
+    }
+
+    private function isAvailable($hook_name = '') {
+        $pre = strtoupper($this->name).'_';
+        $date_restricted = Configuration::get($pre.'DATE_RANGE');
+        $hook_value = Configuration::get($pre.'SELECTED_HOOK');
+
+        if ($hook_name != '' && $hook_value != '') {
+            if ($hook_name != $hook_value) {
+                return false;
+            }
+        }
+        if (isset($_COOKIE['closepopup_cookie'])) {
+            return false;
+        }
+        if ($date_restricted) {
+            $now = strtotime(date('Y-m-d'));
+            $date_from = Configuration::get($pre.'DATE_FROM');
+            $date_to = Configuration::get($pre.'DATE_TO');
+
+            // VALIDATE DATES
+            if ((int)substr($date_from, 0, 4) > 2000) {
+                $from = strtotime($date_from);
+            }
+            else {
+                $from = null;
+            }
+            if ((int)substr($date_to, 0, 4) > 2000) {
+                $to = strtotime($date_to);
+            }
+            else {
+                $to = null;
+            }
+
+            // SWAP DATES IF THEY WERE ARE IN WRONG ORDER
+            if ($from != null && $to != null && $from > $to) {
+                $cached = $from;
+                $from = $to;
+                $to = $cached;
+            }
+
+            if ($from != null && $now < $from) {
+                return false;
+            }
+            if ($to != null && $to < $now) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

@@ -1,27 +1,148 @@
-/**
-* 2007-2022 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author    PrestaShop SA <contact@prestashop.com>
-*  @copyright 2007-2022 PrestaShop SA
-*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*
-* Don't forget to prefix your containers with your own identifier
-* to avoid any conflicts with others containers.
-*/
+@font-face {
+    font-family: 'iconset';
+    src:  url('../img/font/iconset.eot?x7zuzv');
+    src:  url('../img/font/iconset.eot?x7zuzv#iefix') format('embedded-opentype'),
+      url('../img/font/iconset.ttf?x7zuzv') format('truetype'),
+      url('../img/font/iconset.woff?x7zuzv') format('woff'),
+      url('../img/font/iconset.svg?x7zuzv#iconset') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+  }
+  
+  [class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'iconset' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+  
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .icon-hand_stop_icon:before {
+    content: "\e902";
+  }
+  .icon-arrow_right_icon:before {
+    content: "\e900";
+  }
+  .icon-circle_close_icon:before {
+    content: "\e901";
+  }
+  
+
+#closepopup.modal {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+}
+#closepopup.modal .modal-content {
+    border: 5px solid white;
+    color: #fff;
+    padding-left: 25%;
+    background-size: cover;
+    background-position: center;
+}
+#closepopup.modal .modal-body {
+    padding: 30px 15px 0;
+    font-size: 18px;
+    line-height: 120%;
+    font-weight: 500;
+}
+#closepopup.modal .modal-body * {
+    color: inherit;
+    font-size: inherit;
+    font-weight: 300;
+}
+#closepopup.modal .modal-body strong {
+    font-weight: 600;
+}
+#closepopup.modal .modal-body big {
+    font-size: 24px;
+    line-height: 120%;
+}
+#closepopup.modal .modal-body h2 {
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 100%;
+}
+#closepopup.modal .modal-body h2,
+#closepopup.modal .modal-body p {
+    margin: 0 0 35px;
+}
+#closepopup.modal .modal-footer {
+    border: none;
+    text-align: inherit;
+    padding: 0 15px 40px;
+}
+#closepopup.modal .modal-footer .btn-default {
+    font-size: 22px;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+#closepopup.modal .modal-footer .btn-default i {
+    font-size: 24px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 -5px 0 5px;
+    position: relative;
+    left: 0;
+    -webkit-transition: left .2s ease;
+    -moz-transition:    left .2s ease;
+    -o-transition:      left .2s ease;
+    -ms-transition:     left .2s ease;
+    transition:         left .2s ease;
+}
+#closepopup.modal .modal-footer .btn-default:hover i {
+    left: 5px;
+}
+#closepopup.modal .modal-lg {
+    max-width: 690px;
+}
+#closepopup.modal .modal-header {
+    padding: 0;
+    border: none;
+}
+#closepopup.modal .modal-header i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    width: 25%;
+    font-size: 90px;
+    justify-content: center;
+    padding: 30px 0;
+}
+#closepopup.modal .modal-header .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: black;
+    width: 22px;
+    line-height: 22px;
+    border-radius: 50%;
+    opacity: 1;
+    color: white;
+    box-shadow: 0 0 0 2px #fff;
+    margin-top: -13px;
+    margin-right: -13px;
+    font-size: 22px;
+    font-weight: 300;
+}
+@media (max-width: 575px) {
+    #closepopup.modal .modal-content {
+        padding-left: 0;
+        text-align: center;
+    }
+    #closepopup.modal .modal-header i {
+        position: static;
+        justify-content: center;
+        width: 100%;
+        padding-bottom: 20px;
+    }
+}
